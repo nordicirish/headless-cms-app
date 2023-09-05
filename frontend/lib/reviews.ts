@@ -1,5 +1,5 @@
 import { readdir, readFile } from 'node:fs/promises';
-import matter from 'gray-matter';
+// import matter from 'gray-matter';
 import { marked } from 'marked';
 import qs from 'qs';
 const CMS_URL = 'http://localhost:1337';
@@ -18,10 +18,37 @@ export async function getFeaturedReview(): Promise<Review> {
 }
 
 export async function getReview(slug: string): Promise<Review> {
-  const text = await readFile(`./content/reviews/${slug}.md`, 'utf8');
-  const { content, data: { title, date, image } } = matter(text);
-  const body = marked(content, { headerIds: false, mangle: false });
-  return { slug, title, date, image, body };
+  const url =
+  `${CMS_URL}/api/reviews?` +
+  qs.stringify(
+    // fields array with properties we want
+    {
+      // slug is unique so we can filter by it and return 1 item
+      filter: { slug: { eq: slug } },
+      fields: ["slug", "title, subtitle", "publishedAt", "body"],
+      // image is nested object in repsonse so we need to populate it with just the relevant fields
+      populate: { image: { fields: ["url"] } },
+      // sort by publishedAt in descending order
+      sort: "publishedAt:desc",
+      // pageSize 1 prevents further api calls
+      pagination: { pageSize: 1, withcount: false },
+    },
+    // encodeValuesOnly: true to encode only values, not keys
+    { encodeValuesOnly: true }
+  );
+// console.log("getReview", url);
+const response = await fetch(url);
+const { data } = await response.json();
+// item is first element in the data array
+// destructure item to attributes
+const {attributes} = data[0];
+return {
+  slug: attributes.slug,
+  title: attributes.title,
+  date: attributes.publishedAt.slice(0, "yyyy-mm-dd".length),
+  image: CMS_URL + attributes.image.data.attributes.url,
+  // marked renders markdown correctly on the page
+  body: marked(attributes.body, { headerIds: false, mangle: false })}
 }
 
 export async function getReviews(): Promise<Review[]> {
