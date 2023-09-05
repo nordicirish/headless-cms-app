@@ -2,6 +2,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import matter from 'gray-matter';
 import { marked } from 'marked';
 import qs from 'qs';
+const CMS_URL = 'http://localhost:1337';
 
 export interface Review {
   slug: string;
@@ -25,7 +26,7 @@ export async function getReview(slug: string): Promise<Review> {
 
 export async function getReviews(): Promise<Review[]> {
   const url =
-  "http://localhost:1337/api/reviews?" +
+  `${CMS_URL}/api/reviews?` +
   qs.stringify(
     // fields array with properties we want
     {
@@ -43,13 +44,12 @@ export async function getReviews(): Promise<Review[]> {
 console.log(url);
 const response = await fetch(url);
 const { data } = await response.json();
-return data.map((review) => ({
-  slug: review.attributes.slug,
-  title: review.attributes.title,
-  date: review.attributes.publishedAt,
-  // image: review.attributes.image.data[0].url,
+return data.map(({ attributes }) => ({
+  slug: attributes.slug,
+  title: attributes.title,
+  date: attributes.publishedAt.slice(0, "yyyy-mm-dd".length),
+  image: CMS_URL + attributes.image.data.attributes.url,
 }));
-
 }
 
 export async function getSlugs(): Promise<string[]> {
