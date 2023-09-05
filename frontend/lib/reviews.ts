@@ -1,6 +1,7 @@
 import { readdir, readFile } from 'node:fs/promises';
 import matter from 'gray-matter';
 import { marked } from 'marked';
+import qs from 'qs';
 
 export interface Review {
   slug: string;
@@ -23,14 +24,32 @@ export async function getReview(slug: string): Promise<Review> {
 }
 
 export async function getReviews(): Promise<Review[]> {
-  const slugs = await getSlugs();
-  const reviews: Review[] = [];
-  for (const slug of slugs) {
-    const review = await getReview(slug);
-    reviews.push(review);
-  }
-  reviews.sort((a, b) => b.date.localeCompare(a.date));
-  return reviews;
+  const url =
+  "http://localhost:1337/api/reviews?" +
+  qs.stringify(
+    // fields array with properties we want
+    {
+      fields: ["slug", "title, subtitle", "publishedAt"],
+      // image is nested object in repsonse so we need to populate it with just the relevant fields
+      populate: { image: { fields: ["url"] } },
+      // sort by publishedAt in descending order
+      sort: "publishedAt:desc",
+      // pagination default size is 25
+      pagination: { pageSize: 6 },
+    },
+    // encodeValuesOnly: true to encode only values, not keys
+    { encodeValuesOnly: true }
+  );
+console.log(url);
+const response = await fetch(url);
+const { data } = await response.json();
+return data.map((review) => ({
+  slug: review.attributes.slug,
+  title: review.attributes.title,
+  date: review.attributes.publishedAt,
+  // image: review.attributes.image.data[0].url,
+}));
+
 }
 
 export async function getSlugs(): Promise<string[]> {
