@@ -11,7 +11,7 @@ export default async function HomePage() {
       <Heading>Indie Gamer</Heading>
       <p className="pb-3">Only the best indie games, reviewed for you.</p>
       <ul className="flex flex-col gap-3">
-        {review.map((review) => (
+        {review.map((review, index) => (
           <li
             key={review.slug}
             className="bg-white border rounded shadow w-80
@@ -24,6 +24,7 @@ export default async function HomePage() {
               <Image
                 src={review.image}
                 alt="review.title"
+                priority={index === 0}
                 width="320"
                 height="180"
                 className="rounded-t sm:rounded-l sm:rounded-r-none"
