@@ -1,4 +1,4 @@
-import { readdir } from 'node:fs/promises';
+
 import { marked } from 'marked';
 import qs from 'qs';
 
@@ -14,6 +14,7 @@ export interface Review {
   title: string;
   date: string;
   image: string;
+  subtitle: string;
 }
 
 export interface FullReview extends Review {
@@ -76,6 +77,7 @@ function toReview(item: CmsItem): Review {
   return {
     slug: attributes.slug,
     title: attributes.title,
+    subtitle: attributes.subtitle,
     date: attributes.publishedAt.slice(0, 'yyyy-mm-dd'.length),
     image: CMS_URL + attributes.image.data.attributes.url,
   };
