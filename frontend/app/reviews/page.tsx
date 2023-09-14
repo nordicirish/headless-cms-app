@@ -4,6 +4,9 @@ import Link from "next/link";
 import Heading from "@/components/Heading";
 import { getReviews } from "@/lib/reviews";
 
+// force dynamic page generation to reflect changes made to reviews in strapi
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Reviews",
 };
