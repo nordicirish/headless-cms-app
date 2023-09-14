@@ -2,8 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import Heading from "@/components/Heading";
 import { getReviews } from "@/lib/reviews";
-// force dynamic page generation to reflect changes made to reviews in strapi
-export const dynamic = "force-dynamic";
+// next makes page rerender every 60 secons to reflect changes made to reviews in strapi
+export const revalidate = 60;
 
 export default async function HomePage() {
   const review = await getReviews(3);
