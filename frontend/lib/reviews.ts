@@ -23,7 +23,7 @@ export interface FullReview extends Review {
 
 
 
-export async function getReview(slug: string): Promise<FullReview> {
+export async function getReview(slug: string): Promise<FullReview | null> {
   const { data } = await fetchReviews({
     // slug is unique so we can filter by it and return 1 item
     filters: { slug: { $eq: slug } },
@@ -34,6 +34,11 @@ export async function getReview(slug: string): Promise<FullReview> {
     // pageSize 1 prevents further api calls
     pagination: { pageSize: 1, withCount: false },
   });
+// add check for empty data
+    if (data.length === 0) {
+    return null;
+  }
+
   const item = data[0];
   return {
     // copy properties from item and append header
