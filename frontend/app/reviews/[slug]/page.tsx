@@ -12,8 +12,8 @@ interface ReviewPageParams {
 interface ReviewPageProps {
   params: ReviewPageParams;
 }
-
-export const dynamic = "force-dynamic";
+// next makes page rerender every 60 secons to reflect changes made to reviews in strapi
+export const revalidate = 60;
 // No longer used as page is dynamic not static
 // export async function generateStaticParams(): Promise<ReviewPageParams[]> {
 //   const slugs = await getSlugs();
