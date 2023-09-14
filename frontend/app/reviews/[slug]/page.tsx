@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Heading from "@/components/Heading";
 import ShareLinkButton from "@/components/ShareLinkButton";
 import { getReview, getSlugs } from "@/lib/reviews";
@@ -24,6 +25,10 @@ export async function generateMetadata({
   params: { slug },
 }: ReviewPageProps): Promise<Metadata> {
   const review = await getReview(slug);
+  // notFound is a next function that returns a 404 page
+  if (!review) {
+    return notFound();
+  }
   return {
     title: review.title,
   };
@@ -34,6 +39,10 @@ export default async function ReviewPage({
 }: ReviewPageProps) {
   const review = await getReview(slug);
   // console.log("[ReviewPage]", review);
+  // notFound is a next function that returns a 404 page
+  if (!review) {
+    return notFound();
+  }
   return (
     <>
       <Heading>{review.title}</Heading>
