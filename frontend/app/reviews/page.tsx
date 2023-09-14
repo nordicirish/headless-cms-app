@@ -4,8 +4,8 @@ import Link from "next/link";
 import Heading from "@/components/Heading";
 import { getReviews } from "@/lib/reviews";
 
-// force dynamic page generation to reflect changes made to reviews in strapi
-export const dynamic = "force-dynamic";
+// next makes page rerender every 60 secons to reflect changes made to reviews in strapi
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Reviews",
