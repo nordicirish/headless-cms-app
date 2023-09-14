@@ -70,7 +70,8 @@ async function fetchReviews(parameters: any) {
   const url = `${CMS_URL}/api/reviews?`
     + qs.stringify(parameters, { encodeValuesOnly: true });
   // console.log('[fetchReviews]:', url);
-  const response = await fetch(url);
+  // makes server reender linked pages if fetch data changes
+  const response = await fetch(url, {next: {revalidate: 30}});
   if (!response.ok) {
     throw new Error(`CMS returned ${response.status} for ${url}`);
   }

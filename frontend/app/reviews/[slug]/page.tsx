@@ -13,13 +13,13 @@ interface ReviewPageProps {
   params: ReviewPageParams;
 }
 // next makes page rerender every 60 secons to reflect changes made to reviews in strapi
-export const revalidate = 60;
-// No longer used as page is dynamic not static
-// export async function generateStaticParams(): Promise<ReviewPageParams[]> {
-//   const slugs = await getSlugs();
-//   console.log("[ReviewPage] generateStaticParams", slugs);
-//   return slugs.map((slug) => ({ slug }));
-// }
+// export const revalidate = 60;
+// Revalidation handled by lib/reviews.ts
+export async function generateStaticParams(): Promise<ReviewPageParams[]> {
+  const slugs = await getSlugs();
+  console.log("[ReviewPage] generateStaticParams", slugs);
+  return slugs.map((slug) => ({ slug }));
+}
 
 export async function generateMetadata({
   params: { slug },

@@ -5,7 +5,7 @@ import Heading from "@/components/Heading";
 import { getReviews } from "@/lib/reviews";
 
 // next makes page rerender every 60 secons to reflect changes made to reviews in strapi
-export const revalidate = 60;
+// export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Reviews",
