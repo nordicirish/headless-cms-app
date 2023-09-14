@@ -2,6 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import Heading from "@/components/Heading";
 import { getReviews } from "@/lib/reviews";
+// force dynamic page generation to reflect changes made to reviews in strapi
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const review = await getReviews(3);
