@@ -1,6 +1,8 @@
 
 import { marked } from 'marked';
 import qs from 'qs';
+// needs to be exported for use in route.tsx
+export const CACHE_TAG_REVIEWS = 'reviews';
 
 const CMS_URL = 'http://localhost:1337';
 
@@ -70,8 +72,9 @@ async function fetchReviews(parameters: any) {
   const url = `${CMS_URL}/api/reviews?`
     + qs.stringify(parameters, { encodeValuesOnly: true });
   // console.log('[fetchReviews]:', url);
-  // makes server reender linked pages if fetch data changes
-  const response = await fetch(url, {next: {revalidate: 30}});
+  // pass tag to all reviews and review pages
+const response = await fetch(url, {next: {tags: [CACHE_TAG_REVIEWS
+  ]}});
   if (!response.ok) {
     throw new Error(`CMS returned ${response.status} for ${url}`);
   }
