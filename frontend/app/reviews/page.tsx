@@ -16,6 +16,7 @@ interface ReviewsPageProps {
   searchParams: { page?: string };
 }
 const PAGE_SIZE = 6;
+// searchParams enforces dynamic rendering of pages
 export default async function ReviewsPage({ searchParams }: ReviewsPageProps) {
   const page = parsePageParam(searchParams.page);
   // reviews and pageCount are now properties of the object returned by getReviews
