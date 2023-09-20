@@ -25,10 +25,10 @@ export default async function ReviewsPage({ searchParams }: ReviewsPageProps) {
   return (
     <>
       <Heading>Reviews</Heading>
-      {/*page and pageCount are passed to PaginationBar as props */}
-      <PaginationBar page={page} pageCount={pageCount} />
+      {/*page, pageCount and href are passed to PaginationBar as props */}
+      <PaginationBar page={page} pageCount={pageCount} href="/reviews" />
 
-    <ul className="flex flex-row flex-wrap gap-3">
+      <ul className="flex flex-row flex-wrap gap-3">
         {reviews.map((review, index) => (
           <li
             key={review.slug}
