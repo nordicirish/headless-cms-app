@@ -4,6 +4,7 @@ import Link from "next/link";
 import Heading from "@/components/Heading";
 import { getReviews } from "@/lib/reviews";
 import PaginationBar from "@/components/PaginationBar";
+import SearchBox from "@/components/SearchBox";
 
 // next makes page rerender every 60 secons to reflect changes made to reviews in strapi
 // export const revalidate = 60;
@@ -26,8 +27,11 @@ export default async function ReviewsPage({ searchParams }: ReviewsPageProps) {
   return (
     <>
       <Heading>Reviews</Heading>
-      {/*page, pageCount and href are passed to PaginationBar as props */}
-      <PaginationBar page={page} pageCount={pageCount} href="/reviews" />
+      <div className="flex justify-between pb-3">
+        {/*page, pageCount and href are passed to PaginationBar as props */}
+        <PaginationBar page={page} pageCount={pageCount} href="/reviews" />
+        <SearchBox />
+      </div>
 
       <ul className="flex flex-row flex-wrap gap-3">
         {reviews.map((review, index) => (
