@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Heading from "@/components/Heading";
 import { getReviews } from "@/lib/reviews";
+import PaginationBar from "@/components/PaginationBar";
 
 // next makes page rerender every 60 secons to reflect changes made to reviews in strapi
 // export const revalidate = 60;
@@ -24,14 +25,10 @@ export default async function ReviewsPage({ searchParams }: ReviewsPageProps) {
   return (
     <>
       <Heading>Reviews</Heading>
-      <div className="flex gap-2 pb-3">
-        <Link href={`/reviews?page=${page - 1}`}>&lt;</Link>
-        <span>
-          Page {page} of {pageCount}
-        </span>
-        <Link href={`/reviews?page=${page + 1}`}>&gt;</Link>
-      </div>
-      <ul className="flex flex-row flex-wrap gap-3">
+      {/*page and pageCount are passed to PaginationBar as props */}
+      <PaginationBar page={page} pageCount={pageCount} />
+
+    <ul className="flex flex-row flex-wrap gap-3">
         {reviews.map((review, index) => (
           <li
             key={review.slug}
