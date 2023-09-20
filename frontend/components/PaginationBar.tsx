@@ -5,6 +5,7 @@ export default function PaginationBar({ page, pageCount, href }) {
     <div className="flex gap-2 items-center pb-3">
       <PaginationLink href={`${href}?page=${page - 1}`} enabled={page > 1}>
         <ChevronLeftIcon className="h-5 w-5" />
+        {/* sr-only shows the text to screen readers but hides it from the page */}
         <span className="sr-only">Previous page</span>
       </PaginationLink>
       <span>
