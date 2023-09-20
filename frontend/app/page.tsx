@@ -6,14 +6,15 @@ import { getReviews } from "@/lib/reviews";
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const review = await getReviews(3);
+  //destructure reviews from getReviews
+  const { reviews } = await getReviews(3);
   // console.log('[HomePage] rendering');
   return (
     <>
       <Heading>Indie Gamer</Heading>
       <p className="pb-3">Only the best indie games, reviewed for you.</p>
       <ul className="flex flex-col gap-3">
-        {review.map((review, index) => (
+        {reviews.map((review, index) => (
           <li
             key={review.slug}
             className="bg-white border rounded shadow w-80
