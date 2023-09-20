@@ -49,13 +49,14 @@ export async function getReview(slug: string): Promise<FullReview | null> {
     body: marked(item.attributes.body, { headerIds: false, mangle: false }),
   };
 }
-
-export async function getReviews(pageSize): Promise<Review[]> {
+// pass page size and page number to getReviews so we can paginate
+// if page number is undefined strapi will return first page
+export async function getReviews(pageSize: number, page?:number): Promise<Review[]> {
   const { data } = await fetchReviews({
     fields: ['slug', 'title', 'subtitle', 'publishedAt'],
     populate: { image: { fields: ['url'] } },
     sort: ['publishedAt:desc'],
-    pagination: { pageSize },
+    pagination: { pageSize, page },
   });
   return data.map(toReview);
 }
