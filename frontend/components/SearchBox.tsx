@@ -2,16 +2,32 @@
 //need to use client because is rendered on the client side
 import { Combobox } from "@headlessui/react";
 import { useIsClient } from "@/lib/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { searchReviews } from "@/lib/reviews";
+import type { SearchableReview } from "@/lib/reviews";
 
-export default function SearchBox({ reviews }) {
+export default function SearchBox() {
   // useRouter is a hook that gives us access to the router object
   const router = useRouter();
   const isClient = useIsClient();
   const [query, setQuery] = useState("");
+  const [reviews, setReviews] = useState<SearchableReview[]>([]);
+  useEffect(() => {
+    if (query.length > 1) {
+      // need to wrap await in an async function
+      //otherwise it will not be compatible with useEffect
+      (async () => {
+        const reviews = await searchReviews(query);
+        setReviews(reviews);
+      })();
+    } else {
+      //if query is less than 1 character, set reviews to an empty array
+      setReviews([]);
+    }
+  }, [query]);
 
-  const handleChange = (review) => {
+  const handleChange = (review: SearchableReview) => {
     router.push(`/reviews/${review.slug}`);
   };
   //   console.log("[SearchBox] query:", query);
@@ -21,11 +37,6 @@ export default function SearchBox({ reviews }) {
     return null;
   }
 
-  const filtered = reviews
-    .filter((review) =>
-      review.title.toLowerCase().includes(query.toLowerCase())
-    )
-    .slice(0, 5);
   //only return first 5 results in the search box
   return (
     <div className="relative w-48">
@@ -37,7 +48,7 @@ export default function SearchBox({ reviews }) {
           className="border px-2 py-1 rounded w-full"
         />
         <Combobox.Options className="absolute bg-white py-1 w-full">
-          {filtered.map((review) => (
+          {reviews.map((review) => (
             <Combobox.Option key={review.slug} value={review}>
               {({ active }) => (
                 <span
