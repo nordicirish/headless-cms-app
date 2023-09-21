@@ -27,6 +27,7 @@ export interface PaginatedReviews {
   reviews: Review[];
 }
 
+export type SearchableReview = Pick<Review, 'slug' | 'title'>;
 
 
 export async function getReview(slug: string): Promise<FullReview | null> {
@@ -69,9 +70,11 @@ export async function getReviews(pageSize: number, page?:number): Promise<Pagina
     reviews: data.map(toReview)}
 }
 
-export async function getSearchableReviews(): Promise<string[]> {
+export async function searchReviews(query: string): Promise<SearchableReview[]> {
   const { data } = await fetchReviews({
-    fields: ['slug', 'title'], sort: ['publishedAt:desc'], pagination: { pageSize: 100 },
+    // $containsi is case insensitive search of strapi
+    filters: {title: { $containsi: query}},
+    fields: ['slug', 'title'], sort: ['title'], pagination: { pageSize: 5 },
   })
   return data.map(({attributes}) => ({
   slug: attributes.slug,
