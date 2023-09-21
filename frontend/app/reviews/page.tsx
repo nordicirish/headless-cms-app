@@ -2,7 +2,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Heading from "@/components/Heading";
-import { getReviews, getSearchableReviews } from "@/lib/reviews";
+import { getReviews } from "@/lib/reviews";
 import PaginationBar from "@/components/PaginationBar";
 import SearchBox from "@/components/SearchBox";
 
@@ -22,7 +22,7 @@ export default async function ReviewsPage({ searchParams }: ReviewsPageProps) {
   const page = parsePageParam(searchParams.page);
   // reviews and pageCount are now properties of the object returned by getReviews
   const { reviews, pageCount } = await getReviews(PAGE_SIZE, page);
-  const searchableReviews = await getSearchableReviews();
+
   console.log("[ReviewsPage] rendering:", page);
 
   return (
@@ -31,7 +31,7 @@ export default async function ReviewsPage({ searchParams }: ReviewsPageProps) {
       <div className="flex justify-between pb-3">
         {/*page, pageCount and href are passed to PaginationBar as props */}
         <PaginationBar page={page} pageCount={pageCount} href="/reviews" />
-        <SearchBox reviews={searchableReviews} />
+        <SearchBox />
       </div>
 
       <ul className="flex flex-row flex-wrap gap-3">
