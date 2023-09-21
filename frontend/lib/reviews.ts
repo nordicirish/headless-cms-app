@@ -69,6 +69,16 @@ export async function getReviews(pageSize: number, page?:number): Promise<Pagina
     reviews: data.map(toReview)}
 }
 
+export async function getSearchableReviews(): Promise<string[]> {
+  const { data } = await fetchReviews({
+    fields: ['slug', 'title'], sort: ['publishedAt:desc'], pagination: { pageSize: 100 },
+  })
+  return data.map(({attributes}) => ({
+  slug: attributes.slug,
+  title: attributes.title,
+}));
+}
+
 export async function getSlugs(): Promise<string[]> {
   const { data } = await fetchReviews({
     fields: ['slug'], sort: ['publishedAt:desc'], pagination: { pageSize: 100 },
