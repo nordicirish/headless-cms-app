@@ -5,7 +5,8 @@ import qs from 'qs';
 // needs to be exported for use in route.tsx
 export const CACHE_TAG_REVIEWS = 'reviews';
 
-const CMS_URL = 'http://localhost:1337';
+// cms url stored in .env.local
+const CMS_URL = process.env.CMS_URL;
 
 interface CmsItem {
   id: number;
