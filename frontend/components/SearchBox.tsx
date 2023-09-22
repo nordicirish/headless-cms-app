@@ -1,6 +1,7 @@
 "use client";
 //need to use client because is rendered on the client side
 import { Combobox } from "@headlessui/react";
+import { useDebounce } from "use-debounce";
 import { useIsClient } from "@/lib/hooks";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -11,9 +12,11 @@ export default function SearchBox() {
   const router = useRouter();
   const isClient = useIsClient();
   const [query, setQuery] = useState("");
+  // useDebounce is a hook that delays the execution of a function
+  const [debouncedQuery] = useDebounce(query, 300);
   const [reviews, setReviews] = useState<SearchableReview[]>([]);
   useEffect(() => {
-    if (query.length > 1) {
+    if (debouncedQuery.length > 1) {
       // cancel previous requests as the user types
       // makes app more performant and avoids responses being returned out of order
       const controller = new AbortController();
@@ -21,7 +24,7 @@ export default function SearchBox() {
       //otherwise it will not be compatible with useEffect
       (async () => {
         // encodeURIComponent escapes special characters in the query
-        const url = "/api/search?query=" + encodeURIComponent(query);
+        const url = "/api/search?query=" + encodeURIComponent(debouncedQuery);
         const response = await fetch(url, { signal: controller.signal });
         const reviews = await response.json();
         setReviews(reviews);
@@ -32,12 +35,11 @@ export default function SearchBox() {
       //if query is less than 1 character, set reviews to an empty array
       setReviews([]);
     }
-  }, [query]);
+  }, [debouncedQuery]);
 
   const handleChange = (review: SearchableReview) => {
     router.push(`/reviews/${review.slug}`);
   };
-  //   console.log("[SearchBox] query:", query);
 
   // prevents search box from rendering on the server
   if (!isClient) {
