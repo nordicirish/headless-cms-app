@@ -1,4 +1,5 @@
-
+// checks for client-side code and throws error if found
+import "server-only";
 import { marked } from 'marked';
 import qs from 'qs';
 // needs to be exported for use in route.tsx
