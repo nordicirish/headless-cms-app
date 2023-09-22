@@ -4,7 +4,6 @@ import { Combobox } from "@headlessui/react";
 import { useIsClient } from "@/lib/hooks";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { searchReviews } from "@/lib/reviews";
 import type { SearchableReview } from "@/lib/reviews";
 
 export default function SearchBox() {
@@ -15,12 +14,20 @@ export default function SearchBox() {
   const [reviews, setReviews] = useState<SearchableReview[]>([]);
   useEffect(() => {
     if (query.length > 1) {
+      // cancel previous requests as the user types
+      // makes app more performant and avoids responses being returned out of order
+      const controller = new AbortController();
       // need to wrap await in an async function
       //otherwise it will not be compatible with useEffect
       (async () => {
-        const reviews = await searchReviews(query);
+        // encodeURIComponent escapes special characters in the query
+        const url = "/api/search?query=" + encodeURIComponent(query);
+        const response = await fetch(url, { signal: controller.signal });
+        const reviews = await response.json();
         setReviews(reviews);
       })();
+      // cleanup function fires everytime useEfect is called
+      return () => controller.abort();
     } else {
       //if query is less than 1 character, set reviews to an empty array
       setReviews([]);
